@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react"
 import { useNavigate, useParams } from "react-router-dom"
-import { io } from "socket.io-client"
+import socketIOClient from "socket.io-client"
 
 const Timer = () => {
   const { uuid } = useParams()
   const [timeLeft, setTimeLeft] = useState("00:00:00:00")
   const ENDPOINT = "https://timer-api-henna.vercel.app"
-  const socket = io(ENDPOINT)
   const navigate = useNavigate()
 
   useEffect(() => {
+    const socket = socketIOClient(ENDPOINT)
     socket.emit("join_timer", uuid)
 
     socket.on("timer", ({ timeLeft }) => {
