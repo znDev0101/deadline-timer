@@ -5,7 +5,7 @@ import { io } from "socket.io-client"
 const Timer = () => {
   const { uuid } = useParams()
   const [timeLeft, setTimeLeft] = useState("00:00:00:00")
-  const ENDPOINT = process.env.REACT_APP_API_URL
+  const ENDPOINT = "https://timer-api-henna.vercel.app"
   const socket = io(ENDPOINT)
   const navigate = useNavigate()
 

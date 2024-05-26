@@ -7,7 +7,7 @@ const Home = () => {
   const [duration, setDuration] = useState(0)
   const [uuid, setUuid] = useState("")
   const navigate = useNavigate()
-  const ENDPOINT = process.env.REACT_APP_API_URL
+  const ENDPOINT = "https://timer-api-henna.vercel.app"
 
   const startTimer = async () => {
     try {
