@@ -9,12 +9,10 @@ function App() {
     {
       path: "/",
       element: <Root />,
-      children: [
-        {
-          path: "/timer/:uuid",
-          element: <Timer />,
-        },
-      ],
+    },
+    {
+      path: "/timer/:uuid",
+      element: <Timer />,
     },
   ])
 
