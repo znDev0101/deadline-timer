@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { useNavigate, useParams } from "react-router-dom"
-import socketIOClient from "socket.io-client"
+import { io } from "socket.io-client"
 
 const Timer = () => {
   const { uuid } = useParams()
@@ -9,7 +9,7 @@ const Timer = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    const socket = socketIOClient(ENDPOINT)
+    const socket = io(ENDPOINT)
     socket.emit("join_timer", uuid)
 
     socket.on("timer", ({ timeLeft }) => {
