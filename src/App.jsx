@@ -18,17 +18,17 @@ function App() {
   }, [])
 
   const fetchTimer = async () => {
-    const response = await axios.get("http://localhost:3000/timer")
+    const response = await axios.get("https://timer-api-henna.vercel.app/timer")
     setTimer(response.data)
   }
 
   const startTimer = async () => {
-    await axios.post("http://localhost:3000/timer/start")
+    await axios.post("https://timer-api-henna.vercel.app/timer/start")
     fetchTimer()
   }
 
   const stopTimer = async () => {
-    await axios.post("http://localhost:3000/timer/stop")
+    await axios.post("https://timer-api-henna.vercel.app/timer/stop")
     fetchTimer()
   }
 
