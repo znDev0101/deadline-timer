@@ -1,34 +1,53 @@
 import React, { useState, useEffect } from "react"
-import { useNavigate, useParams } from "react-router-dom"
-import { io } from "socket.io-client"
+import io from "socket.io-client"
+import { useParams, useNavigate } from "react-router-dom"
+
+const socket = io("http://localhost:3000")
 
 const Timer = () => {
-  const { uuid } = useParams()
-  const [timeLeft, setTimeLeft] = useState("00:00:00:00")
-  const ENDPOINT = "https://timer-api-henna.vercel.app"
+  const { link } = useParams()
   const navigate = useNavigate()
+  const [time, setTime] = useState(null)
+  const [deadline, setDeadline] = useState("")
 
   useEffect(() => {
-    const socket = io(ENDPOINT)
-    socket.emit("join_timer", uuid)
-
-    socket.on("timer", ({ timeLeft }) => {
-      setTimeLeft(timeLeft)
-    })
-
-    return () => {
-      socket.disconnect()
+    if (link) {
+      socket.emit("join", link)
+      socket.on("timer", (deadline) => {
+        setDeadline(deadline)
+        setTime(new Date(deadline) - new Date())
+      })
     }
-  }, [uuid])
+  }, [link])
 
-  const handleNewPage = () => {
+  useEffect(() => {
+    if (time > 0) {
+      const timer = setTimeout(() => {
+        setTime(time - 1000)
+      }, 1000)
+      return () => clearTimeout(timer)
+    }
+  }, [time])
+
+  const startTimer = () => {
+    const newDeadline = new Date(Date.now() + 60000) // 1 minute timer for demo
+    socket.emit("start-timer", { link, deadline: newDeadline })
+  }
+
+  const resetTimer = () => {
     navigate("/")
   }
+
   return (
     <div>
-      <h1>Countdown Timer</h1>
-      <div>Time Left: {timeLeft}</div>
-      <button onClick={handleNewPage}>New Page</button>
+      {time ? (
+        <div>Time left: {Math.floor(time / 1000)} seconds</div>
+      ) : (
+        <div>Set a timer to start</div>
+      )}
+      <button onClick={startTimer}>Start Timer</button>
+      <button onClick={resetTimer}>Reset Timer</button>
+      <div>Shareable Link: {window.location.href}</div>
     </div>
   )
 }

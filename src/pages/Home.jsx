@@ -1,44 +1,29 @@
+// src/App.js
 import React, { useState } from "react"
-import { useNavigate } from "react-router-dom"
-import axios from "axios"
-import Timer from "../components/Timer"
+import { Link } from "react-router-dom"
+// import Timer from "./Timer"
 
-const Home = () => {
-  const [duration, setDuration] = useState(0)
-  const [uuid, setUuid] = useState("")
-  const navigate = useNavigate()
-  const ENDPOINT = "https://timer-api-henna.vercel.app"
+const App = () => {
+  const [link, setLink] = useState("")
 
-  const startTimer = async () => {
-    try {
-      const response = await axios.post(`${ENDPOINT}/api/timer`, { duration })
-      setUuid(response.data.uuid)
-      navigate(`/timer/${response.data.uuid}`)
-    } catch (error) {
-      console.error("Error creating timer:", error)
-    }
+  const createTimer = async () => {
+    const response = await fetch("http://localhost:3000/create-timer", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ deadline: new Date(Date.now() + 60000) }), // 1 minute timer for demo
+    })
+    const data = await response.json()
+    setLink(data.link)
   }
 
   return (
     <div>
-      <Timer />
-      <h1>Set a Timer</h1>
-      <input
-        type="number"
-        value={duration}
-        onChange={(e) => setDuration(e.target.value)}
-        placeholder="Duration in seconds"
-      />
-      <button onClick={startTimer}>Start Timer</button>
-      {uuid && (
-        <div>
-          Share this link:{" "}
-          <Link
-            to={`/timer/${uuid}`}>{`${window.location.origin}/timer/${uuid}`}</Link>
-        </div>
-      )}
+      <button onClick={createTimer}>Create Timer</button>
+      {link && <Link to={`/${link}`}>Go to Timer</Link>}
     </div>
   )
 }
 
-export default Home
+export default App
